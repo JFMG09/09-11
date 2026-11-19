@@ -6,11 +6,15 @@ const JobListings = ({ isHome }) => {
   const [jobs, setJobs] = useState ([])
   const [cargando, setCargando] = useState(true)
   useEffect(() => {
+    const apiUrl = isHome 
+                   ? '/api/jobs?_page=1&_per_page=3'
+                   : '/api/jobs?_page=1&_per_page=6'
+
     const fetchJobs = async () => {
       try {
-        const response = await fetch('http://localhost:5000/jobs')
+        const response = await fetch(apiUrl)
         const data = await response.json()
-        setJobs(data)
+        setJobs(data.data)
       } catch (error) {
         console.log('Error fetching jobs:', error)
       } finally {
@@ -25,22 +29,19 @@ const JobListings = ({ isHome }) => {
       <h2 className="text-3xl font-bold text-indigo-500 mb-6 text-center">
         Browse Jobs
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
         {cargando ? 
         (< Spinner loading = {cargando}/> )
         :(
-          <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> 
           {jobs.map ((job) => (
           <JobListing key={job.id} job={job} />
           ))}
-          </>
+          </div>
         )
       }
 
 
       </div>
-    </div>
   </section>
 )
 }
